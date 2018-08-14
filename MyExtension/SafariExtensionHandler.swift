@@ -21,8 +21,19 @@ class SafariExtensionHandler: SFSafariExtensionHandler {
         // This method will be called when your toolbar item is clicked.
         NSLog("The extension's toolbar item was clicked")
         SFSafariApplication.getActiveWindow {
-            NSLog("Got active window \($0!)")
+            NSLog("Got active window \($0!.hashValue) should = \(window.hashValue)")
         }
+
+        Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { _ in
+            NSLog("Checking")
+            SFSafariApplication.getActiveWindow {
+                guard let window = $0 else {
+                    NSLog("  Not found")
+                    return
+                }
+                NSLog("  Active window: \(window.hashValue)\n")
+            }
+        })
     }
     
     override func validateToolbarItem(in window: SFSafariWindow, validationHandler: @escaping ((Bool, String) -> Void)) {
